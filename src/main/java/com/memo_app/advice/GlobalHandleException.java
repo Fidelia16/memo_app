@@ -8,6 +8,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.HashMap;
@@ -52,6 +53,17 @@ public class GlobalHandleException {
                 MemoWrapper.builder()
                         .message(e.getMessage())
                         .code(HttpStatus.CONFLICT.value())
+                        .build()
+        );
+    }
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<?> handleMethodArgumentTypeMismatch(
+            MethodArgumentTypeMismatchException e
+    ) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                MemoWrapper.builder()
+                        .code(HttpStatus.BAD_REQUEST.value())
+                        .message("INVALID PARAMETER: " + e.getName())
                         .build()
         );
     }
